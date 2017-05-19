@@ -31,7 +31,7 @@ Vue.config.productionTip = false
      if (to.meta.requireAuth) {
          // 通过vuex state获取当前的token是否存在
          // console.log(isEmptyObject(store.state.user)) 
-         var token = $.cookie("user")
+         var token = $.cookie("access_token")
          if(token) {   
              next();
          }
@@ -52,9 +52,9 @@ Vue.config.productionTip = false
 // axios.defaults.baseURL = "http://localhost:3000";
 axios.interceptors.request.use(
     config => {
-        var token = $.cookie("user");
+        var token = $.cookie("access_token");
         if (token) {  // 判断是否存在token，如果存在的话，则每个http header都加上token
-            config.headers.Authorization = `token ${token}`;
+            config.headers.access_token = `${token}`;
         }
         return config;
     },
@@ -64,10 +64,11 @@ axios.interceptors.request.use(
 
 // http response 拦截器
 axios.interceptors.response.use(
-    response => {
+    response => {   
         return response;
     },
     error => {
+        console.log(error);
         if (error.response) {
             switch (error.response.status) {
                 case 401:
@@ -78,7 +79,7 @@ axios.interceptors.response.use(
                     })
             }
         }
-        return Promise.reject(error.response.data)   // 返回接口返回的错误信息
+        return Promise.reject(error.response)   // 返回接口返回的错误信息
     });
 
 Vue.prototype.$http = axios

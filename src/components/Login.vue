@@ -9,18 +9,18 @@
 
     
       <div class="form-group has-feedback">
-        <input type="email" class="form-control" placeholder="Email">
+        <input v-model="email" type="email" @keyup.enter="login" class="form-control" placeholder="Email">
         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
       </div>
       <div class="form-group has-feedback">
-        <input type="password" class="form-control" placeholder="Password">
+        <input v-model="password" type="password" @keyup.enter="login" class="form-control" placeholder="Password">
         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
       </div>
       <div class="row">
         <div class="col-xs-8">
           <div class="checkbox icheck">
             <label>
-              <input type="checkbox"> Remember Me
+              <input type="checkbox" v-model="rememberMe"> Remember Me
             </label>
           </div>
         </div>
@@ -53,12 +53,28 @@
 <script>
 export default {
   name: 'login',
+  data: function() {
+    return {
+      email: '',
+      password: '',
+      rememberMe: false
+    }
+  },
   methods: {
   	login: function() {
-  		this.$store.state.user= {name: 'ooo'};
-  		$.cookie('user', 'ooo'); 
-  		this.$router.push({ path: '/test' }) ;
-  	}
+      var vm = this;
+      vm.$http.post('/api/user/app/login', {
+            userName: this.$data.email,
+            password: this.$data.password,
+            rememberMe: this.$data.rememberMe
+      }).then(function(response){
+        console.log(response.headers.access_token)
+        $.cookie("access_token", response.headers.access_token);
+        vm.$router.push({ path: '/' });
+      }).catch(function(error) {
+        console.log(error);
+      });
+    }
   }
 }
 </script>

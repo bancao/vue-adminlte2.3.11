@@ -156,7 +156,7 @@
                   <a href="#" class="btn btn-default btn-flat">Profile</a>
                 </div>
                 <div class="pull-right">
-                  <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                  <a href="#" @click="logout" class="btn btn-default btn-flat">Sign out</a>
                 </div>
               </li>
             </ul>
@@ -329,7 +329,17 @@
 
 <script>
   export default {
-    name: 'frame'
+    name: 'frame',
+    methods: {
+      logout: function() {
+        var vm = this;
+        vm.$http.post('/api/user/app/logout',{
+        }).then(function(response) {
+          $.cookie("access_token", '', { expires: -1 });
+          vm.$router.push({path: '/login'});
+        });
+      }
+    }
   }
 </script>
 

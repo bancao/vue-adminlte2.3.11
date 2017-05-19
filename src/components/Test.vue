@@ -18,15 +18,17 @@
 <script>
 export default {
   name: 'test',
-  data () {
+  data: function() {
     return {
       msg: 'Test Vue.js App'
     }
   },
   methods: {
     testLogin: function() {
-      this.$http.get("/api/test").then(function(response){
-        console.log(response);
+      this.$http.get("/api/user/test").then(function(response){
+        
+      }).catch(function(error) {
+          console.log(error);
       });
     }
   }
